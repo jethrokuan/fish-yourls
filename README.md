@@ -1,6 +1,8 @@
 # fish-yourls
 CLI for [YOURLS].
 
+[![asciicast](https://asciinema.org/a/1t3k1xxlxxtnn8xn7a7zoc8k4.png)](https://asciinema.org/a/1t3k1xxlxxtnn8xn7a7zoc8k4)
+
 ## Installation
 With [fisherman]:
 ```fish
