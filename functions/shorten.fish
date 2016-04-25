@@ -25,12 +25,13 @@ function shorten -d "Shorten URL" -a url keyword
       return
   end
 
-  switch "$url"
-    case http{,s}://\?\*
-      set -l url
-    case \*
-      echo "shorten: I can only handle proper urls." > /dev/stderr
-      return 1
+  set -l url_regex "(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]"
+
+  if echo "$url" | grep -q -E $url_regex
+    set -l url "$url"
+  else
+    echo "shorten: I can only handle proper urls." > /dev/stderr
+    return 1
   end
 
   switch "$keyword"
