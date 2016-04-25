@@ -1,5 +1,7 @@
 function __shorten_usage
-  echo "Usage: shorten <url> <keyword>"
+  echo "Usage: shorten <url>       <keyword>     shorten a URl with optional keyword"
+  echo "               -D/--delete <keyword>     delete a short URL by keyword"
+  echo "               -h/--help                 show this help menu"
   functions -e __shorten_usage
 end
 
@@ -23,6 +25,15 @@ function shorten -d "Shorten URL" -a url keyword
     case -h --help
       __shorten_usage > /dev/stdout
       return
+    case -D --delete
+      set -l key "$argv[2]"
+      set -l deleted (fish -c "command curl --max-time 5 -s \"http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=delete&shorturl=$key&format=simple\"  ^ /dev/stderr & await")
+      if test -z "$deleted"
+        echo "✘ Nothing was deleted."
+      else
+        echo "✓ Deleted http://$YOURLS_DOMAIN/$key"
+      end
+      return 0
   end
 
   set -l url_regex "(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]"
@@ -34,16 +45,17 @@ function shorten -d "Shorten URL" -a url keyword
     return 1
   end
 
-  switch "$keyword"
-    case ""
-      set keyword "blank"
-    case \*
-      set keyword "$argv[2]"
+  set -l result
+
+  if set -q keyword
+    set result (fish -c "command curl --max-time 5 -s \"http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=shorturl&url=$url&keyword=$keyword&format=simple\" ^ /dev/stderr & await")
+  else
+    set result (fish -c "command curl --max-time 5 -s \"http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=shorturl&url=$url&format=simple\" ^ /dev/stderr  & await")
   end
 
-  if test $keyword = "blank"
-    curl "http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=shorturl&url=$url&format=simple"
+  if test ! -z "$result"
+    printf "✓ Short URL created: %s\n" "$result"
   else
-    curl "http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=shorturl&url=$url&keyword=$keyword&format=simple"
+    printf "✘ Something went wrong!"
   end
 end
