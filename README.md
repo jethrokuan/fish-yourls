@@ -1,6 +1,12 @@
 # fish-yourls
 CLI for [YOURLS].
 
+## Installation
+With [fisherman]:
+```fish
+fisher jethrokuan/fish-yourls
+```
+
 ## Variables
 ```fish
 set -U YOURLS_DOMAIN example.com
@@ -15,3 +21,4 @@ shorten <url>       <keyword>     shorten a URl with optional keyword
 ```
 
 [YOURLS]:https://yourls.org/
+[fisherman]:https://github.com/fisherman/fisherman
