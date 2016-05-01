@@ -24,3 +24,7 @@ shorten <url>       <keyword>     shorten a URl with optional keyword
 
 [YOURLS]:https://yourls.org/
 [fisherman]:https://github.com/fisherman/fisherman
+
+> NOTE: For `shorten -D` to work, the [delete] plugin must be installed.
+
+[delete]:https://github.com/claytondaley/yourls-api-delete
