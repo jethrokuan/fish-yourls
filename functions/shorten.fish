@@ -53,8 +53,6 @@ function shorten -d "Shorten URL" -a url keyword
     set curl_cmd "command curl --max-time 5 -G -s \"http://$YOURLS_DOMAIN/yourls-api.php\" --data signature=\"$YOURLS_SIG\" --data action=\"shorturl\" --data-urlencode url=\"$url\" --data format=\"simple\" ^ /dev/stderr & await" 
   end
 
-  echo $curl_cmd
-
   set -l result (fish -c "$curl_cmd")
 
   if test ! -z "$result"
