@@ -12,7 +12,7 @@ function shorten -d "Shorten URL" -a url keyword
   end
   
   if test -z "$YOURLS_SIG"
-    printf "Please set YOURLS_SIG to your given signature. Please visit your_domain/admin/tools.php."
+    printf "Please set YOURLS_SIG to your given signature. Please visit $YOURLS_DOMAIN/admin/tools.php."
     return 1
   end
 
@@ -48,10 +48,12 @@ function shorten -d "Shorten URL" -a url keyword
   set -l curl_cmd
 
   if set -q keyword 
-    set curl_cmd "command curl --max-time 5 -s \"http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=shorturl&url=$url&keyword=$keyword&format=simple\" ^ /dev/stderr & await"
+    set curl_cmd "command curl --max-time 5 -G -s \"http://$YOURLS_DOMAIN/yourls-api.php\" --data signature=\"$YOURLS_SIG\" --data action=\"shorturl\" --data-urlencode url=\"$url\" --data keyword=\"$keyword\" --data format=\"simple\" ^ /dev/stderr & await"
   else
-    set curl_cmd "command curl --max-time 5 -s \"http://$YOURLS_DOMAIN/yourls-api.php?signature=$YOURLS_SIG&action=shorturl&url=$url&format=simple\" ^ /dev/stderr  & await"
+    set curl_cmd "command curl --max-time 5 -G -s \"http://$YOURLS_DOMAIN/yourls-api.php\" --data signature=\"$YOURLS_SIG\" --data action=\"shorturl\" --data-urlencode url=\"$url\" --data format=\"simple\" ^ /dev/stderr & await" 
   end
+
+  echo $curl_cmd
 
   set -l result (fish -c "$curl_cmd")
 
